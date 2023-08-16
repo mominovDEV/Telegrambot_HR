@@ -99,35 +99,15 @@ Take the next step in your career journey and apply today to become a valued mem
     ctx.session.menu = vacboard.vac1;
     // ctx.session.menu = this.name;
 
-    ctx.reply(`https://forms.gle/bbBwdbkGXpFHwfgf9`);
-  }
+    ctx.reply(`Fill out the form below, and we will contact you shortly.
 
-  @On('text')
-  async text(ctx: any) {
-    console.log(ctx.session.menu);
-
-    console.log(ctx.message);
-    ctx.reply(ctx.session.user_id);
-  }
-
-  message(ctx: any) {
-    console.log('105');
-
-    const message = ctx.message.text;
-
-    switch (ctx.session.menu) {
-      case vacboard.vac1: {
-        ctx.session.date = {
-          name: message,
-        };
-        ctx.reply('Date of birth (ex. 12.31.1999)');
-        return 0;
-      }
-    }
+    https://forms.gle/bbBwdbkGXpFHwfgf9`);
   }
 
   @Hears(keyboard.Comment)
   comment(@Ctx() ctx: Context) {
+    console.log(ctx.message);
+
     const keyboard = Markup.keyboard([
       [keyboards.Back, keyboards.Home],
     ]).resize();
@@ -161,10 +141,8 @@ Yandex maps: bit.ly/3DRrdhG`,
   @Hears(keyboards.Home)
   home(@Ctx() ctx: Context) {
     const keyboar = Markup.keyboard([
-      keyboard.AboutUs,
-      keyboard.Vacancies,
-      keyboard.ContactUs,
-      keyboard.Comment,
+      [keyboard.AboutUs, keyboard.Vacancies],
+      [keyboard.ContactUs, keyboard.Comment],
     ]).resize();
     ctx.reply(
       `Welcome to Mate Group HR bot!
@@ -173,60 +151,4 @@ I will introduce our company and help you to apply for an available vacancy`,
       keyboar,
     );
   }
-
-  // @SceneEnter(keyboard.Vacancies)
-  // async enter(@Ctx() context: SceneContext) {
-  //   context.reply('2+2 = ?', {
-  //     reply_markup: {
-  //       inline_keyboard: [
-  //         [{ text: 'Может быть 4?', callback_data: '4' }],
-  //         [{ text: 'Точно пять!', callback_data: '5' }],
-  //       ],
-  //     },
-  //   });
-  // }
-
-  // @Action(/4|5/)
-  // async onAnswer(
-  //   @Ctx() context: SceneContext & { update: Update.CallbackQueryUpdate },
-  // ) {
-  //   const cbQuery = context.update.callback_query;
-  //   const userAnswer = 'data' in cbQuery ? cbQuery.data : null;
-
-  //   if (userAnswer === '4') {
-  //     context.reply('верно!');
-  //     context.scene.enter('nextSceneId');
-  //   } else {
-  //     context.reply('подумай еще');
-  //   }
-  // }
-
-  // @Command('')
-  // async InlineButton(@Ctx() ctx: Context) {
-  //   const inlineKeyboard = [[{ text: 'Button 1', callback_data: 'button1' }]];
-  //   ctx.reply('Choose a inline button:', {
-  //     reply_markup: {
-  //       inline_keyboard: inlineKeyboard,
-  //     },
-  //   });
-  // }
-
-  // case "offer_start": {
-  //   return await bot.sendMessage(chatId, messageOffer.offer_start, {
-  //     reply_markup: {
-  //       inline_keyboard: [
-  //         [{ text: "Резюме", callback_data: "cv_public" }],
-  //         [{ text: '"Холодные" письма', callback_data: "cold_letter" }],
-  //         [{ text: "⬅️ Oldingi qadam", callback_data: "start" }],
-  //       ],
-  //     },
-  //   });
-  // }
-
-  // @On('channel_post')
-  // async onChanelPost(@Ctx() ctx: Context) {
-  //   if ('channel_post' in ctx.message) {
-  //     await ctx.reply(String(ctx.message.channel_post));
-  //   }
-  // }
 }
