@@ -38,14 +38,15 @@ I will introduce our company and help you to apply for an available vacancy`,
 
   @Hears(keyboard.AboutUs)
   about_us(@Ctx() ctx: Context) {
-    const keyboard = Markup.keyboard([
-      [keyboards.Back, keyboards.Home],
+    const keyboar = Markup.keyboard([
+      [keyboard.AboutUs, keyboard.Vacancies],
+      [keyboard.ContactUs, keyboard.Comment],
     ]).resize();
     ctx.reply(
       `Mate Group is a leading provider of logistics service, Mate Group offers a dynamic and rewarding work environment where your skills and passion can thrive. If you are looking for a challenging and rewarding career in an American company. Mate Group is the place for you.
 
 Take the next step in your career journey and apply today to become a valued member of Mate Group without previous experience.`,
-      keyboard,
+      keyboar,
     );
   }
 
@@ -63,9 +64,9 @@ Take the next step in your career journey and apply today to become a valued mem
 
   @Hears(vacboard.vac1)
   vac1(@Ctx() ctx: Context) {
-    const keyboard = Markup.keyboard([
-      [keyboards.Back, keyboards.Home],
-    ]).resize();
+    // const keyboard = Markup.keyboard([
+    //   [keyboards.Back, keyboards.Home],
+    // ]).resize();
     ctx.reply(
       `❗️Mate Group announces a vacancy for Auto Transport Broker position.❗️ 
 
@@ -101,22 +102,26 @@ Take the next step in your career journey and apply today to become a valued mem
 
     ctx.reply(`Fill out the form below, and we will contact you shortly.
 
-    https://forms.gle/bbBwdbkGXpFHwfgf9`);
+   http://bit.ly/3E1yWcY`);
   }
 
   @Hears(keyboard.Comment)
   comment(@Ctx() ctx: Context) {
     console.log(ctx.message);
 
-    const keyboard = Markup.keyboard([
-      [keyboards.Back, keyboards.Home],
+    const keyboar = Markup.keyboard([
+      [keyboard.AboutUs, keyboard.Vacancies],
+      [keyboard.ContactUs, keyboard.Comment],
     ]).resize();
-    ctx.reply(`Leave us a message here, we will answer it`, keyboard);
+    ctx.reply(`Leave us a message here, we will answer it`, keyboar);
   }
 
   @Hears(keyboard.ContactUs)
   contact_us(@Ctx() ctx: Context) {
-    const keyboard = Markup.keyboard([keyboards.Back, keyboards.Home]).resize();
+    const keyboar = Markup.keyboard([
+      [keyboard.AboutUs, keyboard.Vacancies],
+      [keyboard.ContactUs, keyboard.Comment],
+    ]).resize();
     ctx.reply(
       `Contact information: 
 Phone: 94 413 7300 
@@ -124,7 +129,7 @@ Telegram: @ali_briann
 Location: Tashkent, Osiyo street 40 
 Google maps: bit.ly/47vq90v 
 Yandex maps: bit.ly/3DRrdhG`,
-      keyboard,
+      keyboar,
     );
   }
 
