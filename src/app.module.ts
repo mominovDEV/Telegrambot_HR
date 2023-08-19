@@ -1,3 +1,4 @@
+import { forwardRef } from '@nestjs/common/utils';
 import { AdminService } from './admin/admin.service';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -19,7 +20,7 @@ import { session } from 'telegraf';
       middlewares: [session()],
     }),
     UserModule,
-    AdminModule,
+    forwardRef(() => AdminModule),
   ],
   controllers: [AppController],
   providers: [AppService],

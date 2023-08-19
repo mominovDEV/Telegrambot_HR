@@ -6,35 +6,17 @@ import {
   vacboard,
   activity,
 } from './enums/keyboard.enums';
-import { UserService } from './user/user.service';
 import { isAdmin } from './utils/is_admin';
 import { AdminService } from './admin/admin.service';
-// import { SceneContext } from 'telegraf/typings/scenes';
 
 @Update()
 export class AppService {
-  constructor(
-    private userService: UserService,
-    private readonly adminService: AdminService,
-  ) {}
+  constructor(private readonly adminService: AdminService) {}
 
   @Start()
   start(@Ctx() ctx: Context) {
     const id = ctx.from.id;
     const userId = ctx.from.id; // User's ID
-    const username = ctx.from.username; // Username (if available)
-    const firstName = ctx.from.first_name; // First name
-    const lastName = ctx.from.last_name; // Last name (if available)
-    const message = 'Admindan userga message yetib keldi!';
-
-    if (!message) {
-      try {
-        ctx.telegram.sendMessage(userId, message);
-        console.log('Message sent successfully to user:', userId);
-      } catch (error) {
-        console.error('Error sending message:', error);
-      }
-    }
 
     if (isAdmin(id)) {
       return this.adminService.start(ctx);
@@ -51,12 +33,11 @@ I will introduce our company and help you to apply for an available vacancy`,
     );
   }
 
-  // async sendMessageToUser(userChatId: number, message: string) {
-  //   try {
-  //     await ctx.telegram.sendMessage(userChatId, message);
-  //     console.log('Message sent successfully to user:', userChatId);
-  //   } catch (error) {
-  //     console.error('Error sending message:', error);
+  // @On('text')
+  // async sendMessagetouser(@Ctx() ctx: any) {
+  //   const id = ctx.from.id;
+  //   if (isAdmin(id)) {
+  //     return this.adminService.message_to_user(ctx);
   //   }
   // }
 
@@ -82,7 +63,7 @@ Take the next step in your career journey and apply today to become a valued mem
     ]).resize();
     ctx.reply(
       `Contact information:
-Telegram: @ali_briann
+Telegram: @mate_logistics
 Location: Tashkent, Osiyo street 40
 
 `,
@@ -144,8 +125,6 @@ Location: Tashkent, Osiyo street 40
 
   @Hears(keyboards.Home)
   home(@Ctx() ctx: any) {
-    console.log('keyboards.Home');
-
     const keyboar = Markup.keyboard([
       [keyboard.AboutUs, keyboard.Vacancies],
       [keyboard.ContactUs, keyboard.Comment],
@@ -167,23 +146,34 @@ I will introduce our company and help you to apply for an available vacancy`,
 
   @On('text')
   async onTextMessage(@Ctx() ctx: any) {
-    const id = ctx.from.id;
-    const userMessages: string[] = [];
     const C_text = ctx.update.message.text;
-    userMessages.push(C_text);
-    ctx.session.userMessages;
-    console.log(userMessages);
-    if (id) {
-      return this.adminService;
+    const admin_Id = 1586527570;
+    const userId = ctx.from.id;
+    ctx.session.user_Id = userId;
+
+    const id = ctx.from.id;
+    if (isAdmin(id)) {
+      return this.adminService.message_to_user(ctx);
     }
 
     if (ctx.session.commenting) {
-      ctx.reply(
-        `We have received your message, will get back to you shortly.  ✅ `,
-      );
+      const message = `${ctx.from.id}
+First Name: ${ctx.from.first_name},
+Last Name: ${ctx.from.last_name},
+User Name: ${ctx.from.username},
+User Message 👇 👇 👇 
+📌  ${C_text}   📌`;
+
+      try {
+        ctx.telegram.sendMessage(admin_Id, message);
+        ctx.reply(
+          'We have received your message, will get back to you shortly.  ✅',
+        );
+      } catch (error) {
+        ctx.reply('Error sending message');
+        console.error('Error sending message:', error);
+      }
       ctx.session.commenting = false;
     }
-
-    return ctx.C_text;
   }
 }
