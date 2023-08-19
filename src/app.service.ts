@@ -50,9 +50,29 @@ Take the next step in your career journey and apply today to become a valued mem
     );
   }
 
+  @Hears(keyboard.ContactUs)
+  contact_us(@Ctx() ctx: any) {
+    const keyboar = Markup.keyboard([
+      [keyboard.AboutUs, keyboard.Vacancies],
+      [keyboard.ContactUs, keyboard.Comment],
+    ]).resize();
+    ctx.reply(
+      `Contact information:
+Telegram: @ali_briann
+Location: Tashkent, Osiyo street 40
+
+`,
+    );
+    ctx.replyWithLocation(41.327753, 69.285488, {
+      // Example latitude and longitude
+      title: 'Our Location',
+      address: 'Tashkent, Osiyo street 40',
+    });
+  }
+
   @Hears(keyboard.Vacancies)
   vacancy(@Ctx() ctx: Context) {
-    const vacboards = Markup.keyboard([[vacboard.vac1]])
+    const vacboards = Markup.keyboard([[vacboard.vac1], [keyboards.Home]])
       .resize()
       .oneTime();
     ctx.reply(`Let\`s start filling your resume`);
@@ -94,57 +114,20 @@ Take the next step in your career journey and apply today to become a valued mem
 
   @Action(/4/)
   async name(@Ctx() ctx: any) {
-    // const name_id = ctx.from.id;
-    // console.log(ctx.message.message_id);
-
     ctx.session.menu = vacboard.vac1;
-    // ctx.session.menu = this.name;
 
-    ctx.reply(`Fill out the form below, and we will contact you shortly.
+    const message = `
+      Click [here](http://bit.ly/3ElVcih) to visit our website.
 
-   http://bit.ly/3E1yWcY`);
+    `;
+
+    ctx.replyWithMarkdownV2(message);
   }
-
-  @Hears(keyboard.Comment)
-  comment(@Ctx() ctx: Context) {
-    console.log(ctx.message);
-
-    const keyboar = Markup.keyboard([
-      [keyboard.AboutUs, keyboard.Vacancies],
-      [keyboard.ContactUs, keyboard.Comment],
-    ]).resize();
-    ctx.reply(`Leave us a message here, we will answer it`, keyboar);
-  }
-
-  @Hears(keyboard.ContactUs)
-  contact_us(@Ctx() ctx: Context) {
-    const keyboar = Markup.keyboard([
-      [keyboard.AboutUs, keyboard.Vacancies],
-      [keyboard.ContactUs, keyboard.Comment],
-    ]).resize();
-    ctx.reply(
-      `Contact information: 
-Phone: 94 413 7300 
-Telegram: @ali_briann 
-Location: Tashkent, Osiyo street 40 
-Google maps: bit.ly/47vq90v 
-Yandex maps: bit.ly/3DRrdhG`,
-      keyboar,
-    );
-  }
-
-  // @Hears(keyboards.Back)
-  // back(@Ctx() ctx: Context) {
-  //   const keyboar = Markup.keyboard([
-  //     keyboard.AboutUs,
-  //     keyboard.Vacancies,
-  //     keyboard.ContactUs,
-  //     keyboard.Comment,
-  //   ]).resize();
-  // }
 
   @Hears(keyboards.Home)
-  home(@Ctx() ctx: Context) {
+  home(@Ctx() ctx: any) {
+    console.log('keyboards.Home');
+
     const keyboar = Markup.keyboard([
       [keyboard.AboutUs, keyboard.Vacancies],
       [keyboard.ContactUs, keyboard.Comment],
@@ -156,4 +139,39 @@ I will introduce our company and help you to apply for an available vacancy`,
       keyboar,
     );
   }
+
+  @Hears(keyboard.Comment)
+  comment(@Ctx() ctx: any) {
+    console.log(ctx.message);
+
+    const keyb = Markup.keyboard([[keyboards.Home]]).resize();
+    ctx.session.commenting = true;
+
+    ctx.reply(`Leave us a message here, we will answer it`, keyb);
+  }
+
+  @On('text')
+  async onTextMessage(@Ctx() ctx: any) {
+    if (ctx.session.commenting) {
+      // const vacboards = Markup.keyboard([keyboards.Home]).resize();
+
+      ctx.reply(
+        `We have received your message, will get back to you shortly.`,
+        // vacboards,
+      );
+
+      // Clear the commenting state
+      ctx.session.commenting = false;
+    }
+  }
+
+  // @Hears(keyboards.Back)
+  // back(@Ctx() ctx: Context) {
+  //   const keyboar = Markup.keyboard([
+  //     keyboard.AboutUs,
+  //     keyboard.Vacancies,
+  //     keyboard.ContactUs,
+  //     keyboard.Comment,
+  //   ]).resize();
+  // }
 }
