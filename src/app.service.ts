@@ -9,7 +9,7 @@ import {
 import { UserService } from './user/user.service';
 import { isAdmin } from './utils/is_admin';
 import { AdminService } from './admin/admin.service';
-import { SceneContext } from 'telegraf/typings/scenes';
+// import { SceneContext } from 'telegraf/typings/scenes';
 
 @Update()
 export class AppService {
@@ -21,6 +21,21 @@ export class AppService {
   @Start()
   start(@Ctx() ctx: Context) {
     const id = ctx.from.id;
+    const userId = ctx.from.id; // User's ID
+    const username = ctx.from.username; // Username (if available)
+    const firstName = ctx.from.first_name; // First name
+    const lastName = ctx.from.last_name; // Last name (if available)
+    const message = 'Admindan userga message yetib keldi!';
+
+    if (!message) {
+      try {
+        ctx.telegram.sendMessage(userId, message);
+        console.log('Message sent successfully to user:', userId);
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+    }
+
     if (isAdmin(id)) {
       return this.adminService.start(ctx);
     }
@@ -35,6 +50,15 @@ I will introduce our company and help you to apply for an available vacancy`,
       keyboar,
     );
   }
+
+  // async sendMessageToUser(userChatId: number, message: string) {
+  //   try {
+  //     await ctx.telegram.sendMessage(userChatId, message);
+  //     console.log('Message sent successfully to user:', userChatId);
+  //   } catch (error) {
+  //     console.error('Error sending message:', error);
+  //   }
+  // }
 
   @Hears(keyboard.AboutUs)
   about_us(@Ctx() ctx: Context) {
@@ -84,9 +108,6 @@ Location: Tashkent, Osiyo street 40
 
   @Hears(vacboard.vac1)
   vac1(@Ctx() ctx: Context) {
-    // const keyboard = Markup.keyboard([
-    //   [keyboards.Back, keyboards.Home],
-    // ]).resize();
     ctx.reply(
       `❗️Mate Group announces a vacancy for Auto Transport Broker position.❗️ 
 
@@ -116,12 +137,9 @@ Location: Tashkent, Osiyo street 40
   async name(@Ctx() ctx: any) {
     ctx.session.menu = vacboard.vac1;
 
-    const message = `
-      Click [here](http://bit.ly/3ElVcih) to visit our website.
-
-    `;
-
-    ctx.replyWithMarkdownV2(message);
+    ctx.reply(`Fill out the form below, and we will contact you shortly.
+    
+➡️ https://bit.ly/3ElVcih ⬅️`);
   }
 
   @Hears(keyboards.Home)
@@ -142,36 +160,30 @@ I will introduce our company and help you to apply for an available vacancy`,
 
   @Hears(keyboard.Comment)
   comment(@Ctx() ctx: any) {
-    console.log(ctx.message);
-
     const keyb = Markup.keyboard([[keyboards.Home]]).resize();
     ctx.session.commenting = true;
-
-    ctx.reply(`Leave us a message here, we will answer it`, keyb);
+    ctx.reply(`Leave us a message here, we will answer it  ⬇️`, keyb);
   }
 
   @On('text')
   async onTextMessage(@Ctx() ctx: any) {
+    const id = ctx.from.id;
+    const userMessages: string[] = [];
+    const C_text = ctx.update.message.text;
+    userMessages.push(C_text);
+    ctx.session.userMessages;
+    console.log(userMessages);
+    if (id) {
+      return this.adminService;
+    }
+
     if (ctx.session.commenting) {
-      // const vacboards = Markup.keyboard([keyboards.Home]).resize();
-
       ctx.reply(
-        `We have received your message, will get back to you shortly.`,
-        // vacboards,
+        `We have received your message, will get back to you shortly.  ✅ `,
       );
-
-      // Clear the commenting state
       ctx.session.commenting = false;
     }
-  }
 
-  // @Hears(keyboards.Back)
-  // back(@Ctx() ctx: Context) {
-  //   const keyboar = Markup.keyboard([
-  //     keyboard.AboutUs,
-  //     keyboard.Vacancies,
-  //     keyboard.ContactUs,
-  //     keyboard.Comment,
-  //   ]).resize();
-  // }
+    return ctx.C_text;
+  }
 }
